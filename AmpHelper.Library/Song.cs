@@ -758,9 +758,15 @@ namespace AmpHelper
 
                 ValidateSong(songPath, songName, true);
 
+                var moggSong = MoggSong.FromMoggsong(Path.Combine(songPath, $"{songName}.moggsong"));
+                moggSong.MoggPath = $"{songName}.mogg";
+                moggSong.MidiPath = $"{songName}.mid";
+
+                var donorSong = moggSong.DonorSong ?? "tut0";
+
                 foreach (var ext in new string[] { $"mid_{platform}", $"png.dta_dta_{platform}", $"png_{platform}" })
                 {
-                    var donorFile = Path.Combine(paths.Songs, "tut0", $"tut0.{ext}");
+                    var donorFile = Path.Combine(paths.Songs, donorSong, $"{donorSong}.{ext}");
                     var destFile = Path.Combine(paths.Songs, songName, $"{songName}.{ext}");
 
                     if (!File.Exists(destFile))
@@ -768,10 +774,7 @@ namespace AmpHelper
                         File.Copy(donorFile, destFile);
                     }
                 }
-
-                var moggSong = MoggSong.FromMoggsong(Path.Combine(songPath, $"{songName}.moggsong"));
-                moggSong.MoggPath = $"{songName}.mogg";
-                moggSong.MidiPath = $"{songName}.mid";
+                
                 var dtx = moggSong.ToDtx();
 
                 using (var dtbStream = File.Create(Path.Combine(songPath, $"{songName}.moggsong_dta_{platform}")))
