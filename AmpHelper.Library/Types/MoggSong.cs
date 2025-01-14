@@ -1,4 +1,4 @@
-﻿using AmpHelper.Enums;
+using AmpHelper.Enums;
 using AmpHelper.Extensions;
 using AmpHelper.Helpers;
 using DtxCS;
@@ -144,7 +144,7 @@ namespace AmpHelper.Types
         public string ShortArtist { get; set; }
 
         /// <summary>
-        /// The short artist of the song, this doesn't appear to be used in-game.
+        /// The song to be used as the donor for various files.
         /// </summary>
         [JsonPropertyName("donor_song")]
         public string DonorSong { get; set; }
@@ -361,7 +361,7 @@ namespace AmpHelper.Types
             ShortTitle = dtxDict.GetValueOrDefault("/title_short")?.GetChild<string>(1);
             Artist = dtxDict.GetValueOrDefault("/artist")?.GetChild<string>(1);
             ShortArtist = dtxDict.GetValueOrDefault("/artist_short")?.GetChild<string>(1);
-            DonorSong = dtxDict.GetValueOrDefault("/donor_song")?.GetChild<string>(1);
+            DonorSong = dtxDict.GetValueOrDefault("/donor_song")?.GetChild<string>(1)?.Trim();
             Description = dtxDict.GetValueOrDefault("/desc")?.GetChild<string>(1);
             RawUnlockRequirement = dtxDict.GetValueOrDefault("/unlock_requirement")?.GetChild<string>(1);
             Bpm = dtxDict.GetValueOrDefault("/bpm")?.GetChild<double>(1, e => double.Parse(e.ToString(), provider: CultureInfo.InvariantCulture));
@@ -739,7 +739,7 @@ namespace AmpHelper.Types
                 node.RemoveAllAfter(0).AddNode(new DataAtom(DemoVideo));
             }
 
-            if ((node = GetOrDeleteArray(dtx, "donor_song", knownNodes.GetValueOrDefault("/donor_song"), DemoVideo)) != null)
+            if ((node = GetOrDeleteArray(dtx, "donor_song", knownNodes.GetValueOrDefault("/donor_song"), DonorSong)) != null)
             {
                 node.RemoveAllAfter(0).AddNode(new DataAtom(DonorSong));
             }
